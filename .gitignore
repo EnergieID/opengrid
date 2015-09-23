@@ -13,3 +13,5 @@ library/houseprint-d74f58100c93.json
 
 scripts/*.json
 
+
+*.crt
