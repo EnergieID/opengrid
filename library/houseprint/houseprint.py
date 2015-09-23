@@ -69,7 +69,7 @@ class Houseprint(object):
         #fetch credentials
         json_key = json.load(open(gjson))
         scope = ['https://spreadsheets.google.com/feeds']
-        credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'], scope)
+        credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode('ascii'), scope)
 
         #authorize and login
         gc = gspread.authorize(credentials)
@@ -289,9 +289,8 @@ class Houseprint(object):
             self._tmpos = None
 
         abspath = os.path.join(os.getcwd(), filename)
-        f=file(abspath, 'w')
-        pickle.dump(self, f)
-        f.close()
+        with open(abspath, 'wb') as f:
+            pickle.dump(self, f)
 
         print("Saved houseprint to {}".format(abspath))
 
@@ -354,7 +353,6 @@ class Houseprint(object):
 def load_houseprint_from_file(filename):
     """Return a static (=anonymous) houseprint object"""
 
-    f = open(filename, 'r')
-    hp = pickle.load(f)
-    f.close()
+    with open(filename, 'rb') as f:
+        hp = pickle.load(f)
     return hp
